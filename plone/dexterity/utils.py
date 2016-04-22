@@ -21,6 +21,8 @@ from zope.container.interfaces import INameChooser
 from zope.dottedname.resolve import resolve
 from zope.event import notify
 from zope.lifecycleevent import ObjectCreatedEvent
+from collective.filepreviewbehavior.events import PreviewableFileCreatedEvent
+
 
 import datetime
 import logging
@@ -190,11 +192,14 @@ def addContentToContainer(container, object, checkConstraints=True):
 def createContentInContainer(container, portal_type, checkConstraints=True,
                              **kw):
     content = createContent(portal_type, **kw)
-    return addContentToContainer(
+
+    con = addContentToContainer(
         container,
         content,
         checkConstraints=checkConstraints
     )
+    notify(PreviewableFileCreatedEvent(con))
+    return con
 
 
 def safe_utf8(st):
