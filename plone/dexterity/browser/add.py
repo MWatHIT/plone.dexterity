@@ -52,6 +52,7 @@ class DefaultAddForm(DexterityExtensibleForm, form.AddForm):
     def create(self, data):
         fti = getUtility(IDexterityFTI, name=self.portal_type)
 
+
         container = aq_inner(self.context)
         content = createObject(fti.factory)
 
@@ -79,6 +80,9 @@ class DefaultAddForm(DexterityExtensibleForm, form.AddForm):
         fti = getUtility(IDexterityFTI, name=self.portal_type)
         container = aq_inner(self.context)
         new_object = addContentToContainer(container, object)
+#         import pdb
+#         pdb.set_trace()
+        notify(PreviewableFileCreatedEvent(new_object))
 
         if fti.immediate_view:
             self.immediate_view = "/".join(
@@ -103,11 +107,13 @@ class DefaultAddForm(DexterityExtensibleForm, form.AddForm):
         if errors:
             self.status = self.formErrorsMessage
             return
+      
         obj = self.createAndAdd(data)
         if obj is not None:
             # mark only as finished if we get the new object
             self._finishedAdd = True
-            notify(PreviewableFileCreatedEvent(obj))
+
+            
             
             IStatusMessage(self.request).addStatusMessage(
                 self.success_message, "info"
