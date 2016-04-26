@@ -18,6 +18,7 @@ from zope.component import createObject
 from zope.component import getUtility
 from zope.event import notify
 from zope.publisher.browser import BrowserPage
+from collective.filepreviewbehavior.events import PreviewableFileCreatedEvent
 
 
 class DefaultAddForm(DexterityExtensibleForm, form.AddForm):
@@ -106,6 +107,8 @@ class DefaultAddForm(DexterityExtensibleForm, form.AddForm):
         if obj is not None:
             # mark only as finished if we get the new object
             self._finishedAdd = True
+            notify(PreviewableFileCreatedEvent(obj))
+            
             IStatusMessage(self.request).addStatusMessage(
                 self.success_message, "info"
             )

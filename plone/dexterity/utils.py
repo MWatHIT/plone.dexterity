@@ -193,6 +193,7 @@ def createContentInContainer(container, portal_type, checkConstraints=True,
                              **kw):
     content = createContent(portal_type, **kw)
 
+
     con = addContentToContainer(
         container,
         content,
